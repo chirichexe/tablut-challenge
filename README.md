@@ -1,64 +1,49 @@
-# TablutCompetition
-Software for the Tablut Students Competition
+# Tablut Challenge - Team GuerrieroSannita
 
-## Installation on Ubuntu/Debian 
+Progetto per la competizione Tablut Challenge 2025/2026.
 
-From console, run these commands to install JDK 8 e ANT:
+## Struttura del Progetto
 
-```
-sudo apt update
-sudo apt install openjdk-8-jdk -y
-sudo apt install ant -y
-```
+Il sistema estende il framework fornito e implementa un agente in Java.
 
-Now, clone the project repository:
+- Tablut/src/.../client/TablutStudentClient.java: Classe principale contenente il ciclo di gioco e la logica di ricerca.
+- Tablut/Executables/run_student.sh: Script di utilità per test locali.
+- Tablut/Executables/runmyplayer.sh: Script ufficiale per la sottomissione (puntamento a jar/classi finali).
+- Tablut/build.xml: File Ant per compilazione e gestione server.
 
-```
-git clone https://github.com/AGalassi/TablutCompetition.git
-```
+## Istruzioni per il Test
 
-## Run the Server without Eclipse
+Eseguire i comandi in terminali separati.
 
-The easiest way is to utilize the ANT configuration script from console.
-Go into the project folder (the folder with the `build.xml` file):
-```
-cd TablutCompetition/Tablut
-```
+1. Compilazione:
+   ant -f Tablut/build.xml compile
 
-Compile the project:
+2. Avvio Server:
+   ant -f Tablut/build.xml server
 
-```
-ant clean
-ant compile
-```
+3. Avvio Giocatore (Student):
+   ./Tablut/Executables/run_student.sh WHITE 60 localhost
 
-The compiled project is in  the `build` folder.
-Run the server with:
+4. Avvio Avversario (Random):
+   ant -f Tablut/build.xml randomblack
 
-```
-ant server
-```
+## Implementazione Logica AI
 
-Check the behaviour using the random players in two different console windows:
+Sviluppare le seguenti componenti in TablutStudentClient.java:
 
-```
-ant randomwhite
+1. Ricerca: Minimax con Alpha-Beta Pruning.
+   - Utilizzare state.clone() per le simulazioni.
+   - Utilizzare rules.checkMove(state, action) per validare le mosse.
 
-ant randomblack
-```
+2. Valutazione: Funzione di euristica per l'assegnazione di un punteggio agli stati.
+   - Bianco: priorità alla fuga del Re e controllo dei percorsi verso le escape tiles.
+   - Nero: priorità alla cattura e all'accerchiamento del Re.
 
-At this point, a window with the game state should appear.
+3. Gestione Tempo: Iterative Deepening.
+   - Monitorare System.currentTimeMillis() per interrompere la ricerca prima del timeout di 60 secondi.
 
-To be able to run other classes, change the `build.xml` file and re-compile everything
-
-
-## Replay function
-
-Replay a game using the logfile
-
-Example:
-
-```
-java -jar .\server.jar -g -R .\logs\PLAYER1_vs_PLAYER2_1652711382324_gameLog.txt
-```
-
+## Vincoli Tecnici
+- Timeout: 60 secondi per mossa (imposto dal server).
+- Regole: Ashton Tablut (9x9).
+- Risorse: Il processo deve essere autonomo e non richiedere connessione internet.
+- Log: Limitare l'output su stdout per evitare la saturazione del disco nella VM.
