@@ -11,10 +11,12 @@ import java.util.List;
 public class MinMaxTablut {
     private final Game game;
     private final int maxDepth;
+    private final Evaluator evaluator;
 
     public MinMaxTablut(Game game, int maxDepth) {
         this.game = game;
         this.maxDepth = maxDepth;
+        this.evaluator = new Evaluator();
     }
 
     /*
@@ -114,13 +116,13 @@ public class MinMaxTablut {
 
         // STATO TERMINALE (oppure ho terminato la profondità minima da raggiungere): non faccio niente, uso il valore restituito
         if (depth == 0 || isTerminal(state)) {
-            return evaluate(state);
+            return evaluator.evaluate(state);
         }
 
         List<Action> possibleMoves = getPossibleMoves(state);
         // PROFONDITÀ MASSIMA RAGGIUNTA: uso l'euristica per capire la "bontà " della soluzione
         if (possibleMoves.isEmpty()) {
-            return evaluate(state);
+            return evaluator.evaluate(state);
         }
 
         State.Turn turn = state.getTurn();
@@ -148,7 +150,7 @@ public class MinMaxTablut {
             return minEval;
         }
 
-        return evaluate(state);
+        return evaluator.evaluate(state);
     }
 
     
@@ -188,22 +190,5 @@ public class MinMaxTablut {
         } catch (Exception e) {
             throw new RuntimeException("Mossa non valida generata: " + action, e);
         }
-    }
-
-    /**
-     * Euristica mock: restituisce 0.0f o un valore base per la vittoria.
-     */
-    public float evaluate(State state) {
-        State.Turn turn = state.getTurn();
-        if (turn == State.Turn.WHITEWIN) return 10000.0f;
-        if (turn == State.Turn.BLACKWIN) return -10000.0f;
-        if (turn == State.Turn.DRAW) return 0.0f;
-        
-        // Mock: semplice differenza di materiale
-        int whitePawns = state.getNumberOf(State.Pawn.WHITE);
-        int blackPawns = state.getNumberOf(State.Pawn.BLACK);
-        int king = state.getNumberOf(State.Pawn.KING);
-        
-        return (whitePawns * 10 + king * 100) - (blackPawns * 10);
     }
 }
