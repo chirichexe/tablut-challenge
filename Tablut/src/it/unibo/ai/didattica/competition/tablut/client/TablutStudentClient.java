@@ -13,13 +13,13 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Turn;
 
 /**
- * TablutStudentBlack
+ * TablutStudentClient
  */
-public class TablutStudentBlack extends TablutClient {
+public class TablutStudentClient extends TablutClient {
 
     private final int timeout;
 
-    public TablutStudentBlack(String player, String name, int timeout, String ipAddress) throws UnknownHostException, IOException {
+    public TablutStudentClient(String player, String name, int timeout, String ipAddress) throws UnknownHostException, IOException {
         super(player, name, timeout, ipAddress);
         this.timeout = timeout;
     }
@@ -27,7 +27,7 @@ public class TablutStudentBlack extends TablutClient {
     public static void main(String[] args) throws UnknownHostException, ClassNotFoundException, IOException {
         // Parametri obbligatori come da Slide 20: <Role> <Timeout> <ServerIP>
         if (args.length < 3) {
-            System.out.println("Usage: java TablutStudentBlack <WHITE|BLACK> <timeout> <serverIP>");
+            System.out.println("Usage: java TablutStudentClient <WHITE|BLACK> <timeout> <serverIP>");
             System.exit(-1);
         }
 
@@ -38,7 +38,7 @@ public class TablutStudentBlack extends TablutClient {
 
         System.out.println("Lancio del player " + teamName + " come " + role + " con timeout " + timeout + "s su " + ipAddress);
 
-        TablutStudentBlack client = new TablutStudentBlack(role, teamName, timeout, ipAddress);
+        TablutStudentClient client = new TablutStudentClient(role, teamName, timeout, ipAddress);
         client.run();
     }
 
