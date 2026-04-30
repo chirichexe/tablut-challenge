@@ -1,16 +1,7 @@
 package it.unibo.ai.didattica.competition.tablut.client;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.net.UnknownHostException;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-
-import com.google.gson.Gson;
 
 import it.unibo.ai.didattica.competition.tablut.domain.*;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Turn;
@@ -106,10 +97,9 @@ public class TablutStudentClient extends TablutClient {
 			System.exit(4);
 		}
 
-		List<int[]> pawns = new ArrayList<int[]>();
-		List<int[]> empty = new ArrayList<int[]>();
-
 		System.out.println("You are player " + this.getPlayer().toString() + "!");
+
+		MinMaxTablut minMax = new MinMaxTablut(rules, 3);
 
 		while (true) {
 			try {
@@ -127,72 +117,12 @@ public class TablutStudentClient extends TablutClient {
 			} catch (InterruptedException e) {
 			}
 
-            /**
-             * Pawns: se siamo bianchi -> coordinate di celle impegnate da pedine bianche o re
-             *         se siamo neri -> coordinate di celle impegnate da pedine nere
-             * Empty: coordinate di celle vuote
-            */
-
 			if (this.getPlayer().equals(Turn.WHITE)) { /* siamo bianchi */
 				// Mio turno
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.WHITE)) {
-					int[] buf;
-					for (int i = 0; i < state.getBoard().length; i++) {
-						for (int j = 0; j < state.getBoard().length; j++) {
-							if (state.getPawn(i, j).equalsPawn(State.Pawn.WHITE.toString())
-									|| state.getPawn(i, j).equalsPawn(State.Pawn.KING.toString())) {
-								buf = new int[2];
-								buf[0] = i;
-								buf[1] = j;
-								pawns.add(buf);
-							} else if (state.getPawn(i, j).equalsPawn(State.Pawn.EMPTY.toString())) {
-								buf = new int[2];
-								buf[0] = i;
-								buf[1] = j;
-								empty.add(buf);
-							}
-						}
-					}
-
-					int[] selected = null;
-
-					boolean found = false;
-					Action a = null;
-					try {
-						a = new Action("z0", "z0", State.Turn.WHITE);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-
-                    /* logica di selezione della mossa */
-					while (!found) {
-						if (pawns.size() > 1) {
-							selected = pawns.get(new Random().nextInt(pawns.size() - 1));
-						} else {
-							selected = pawns.get(0);
-						}
-
-						String from = this.getCurrentState().getBox(selected[0], selected[1]);
-
-						selected = empty.get(new Random().nextInt(empty.size() - 1));
-						String to = this.getCurrentState().getBox(selected[0], selected[1]);
-
-						try {
-							a = new Action(from, to, State.Turn.WHITE);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-						try {
-							rules.checkMove(state, a);
-							found = true;
-						} catch (Exception e) {
-
-						}
-
-					}
+					
+					System.out.println("Computing best move...");
+					Action a = minMax.getBestMove(state);
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {
@@ -201,8 +131,6 @@ public class TablutStudentClient extends TablutClient {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					pawns.clear();
-					empty.clear();
 
 				}
 				// Turno dell'avversario
@@ -229,57 +157,9 @@ public class TablutStudentClient extends TablutClient {
 
 				// Mio turno
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.BLACK)) {
-					int[] buf;
-					for (int i = 0; i < state.getBoard().length; i++) {
-						for (int j = 0; j < state.getBoard().length; j++) {
-							if (state.getPawn(i, j).equalsPawn(State.Pawn.BLACK.toString())) {
-								buf = new int[2];
-								buf[0] = i;
-								buf[1] = j;
-								pawns.add(buf);
-							} else if (state.getPawn(i, j).equalsPawn(State.Pawn.EMPTY.toString())) {
-								buf = new int[2];
-								buf[0] = i;
-								buf[1] = j;
-								empty.add(buf);
-							}
-						}
-					}
-
-					int[] selected = null;
-
-					boolean found = false;
-					Action a = null;
-					try {
-						a = new Action("z0", "z0", State.Turn.BLACK);
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-					;
-					while (!found) {
-						selected = pawns.get(new Random().nextInt(pawns.size() - 1));
-						String from = this.getCurrentState().getBox(selected[0], selected[1]);
-
-						selected = empty.get(new Random().nextInt(empty.size() - 1));
-						String to = this.getCurrentState().getBox(selected[0], selected[1]);
-
-						try {
-							a = new Action(from, to, State.Turn.BLACK);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
-						}
-
-						System.out.println("try: " + a.toString());
-						try {
-							rules.checkMove(state, a);
-							found = true;
-						} catch (Exception e) {
-
-						}
-
-					}
+					
+					System.out.println("Computing best move...");
+					Action a = minMax.getBestMove(state);
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {
@@ -288,8 +168,6 @@ public class TablutStudentClient extends TablutClient {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					pawns.clear();
-					empty.clear();
 
 				}
 
