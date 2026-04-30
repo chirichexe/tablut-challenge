@@ -1,4 +1,5 @@
-# Tablut Challenge - Team GuerrieroSannita
+# Tablut Challenge - Team Lucani
+## Davide Chirichella, Gabriele Doti
 
 Progetto per la competizione Tablut Challenge 2025/2026.
 
