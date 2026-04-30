@@ -126,7 +126,13 @@ public class TablutStudentClient extends TablutClient {
 			} catch (InterruptedException e) {
 			}
 
-			if (this.getPlayer().equals(Turn.WHITE)) {
+            /**
+             * Pawns: se siamo bianchi -> coordinate di celle impegnate da pedine bianche o re
+             *         se siamo neri -> coordinate di celle impegnate da pedine nere
+             * Empty: coordinate di celle vuote
+            */
+
+			if (this.getPlayer().equals(Turn.WHITE)) { /* siamo bianchi */
 				// Mio turno
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.WHITE)) {
 					int[] buf;
@@ -157,6 +163,8 @@ public class TablutStudentClient extends TablutClient {
 						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
+
+                    /* logica di selezione della mossa */
 					while (!found) {
 						if (pawns.size() > 1) {
 							selected = pawns.get(new Random().nextInt(pawns.size() - 1));
@@ -216,7 +224,7 @@ public class TablutStudentClient extends TablutClient {
 					System.exit(0);
 				}
 
-			} else {
+			} else { /* siamo neri */
 
 				// Mio turno
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.BLACK)) {
