@@ -27,7 +27,7 @@ public class Evaluator {
 
         float score = 0;
         for (HeuristicTablut heuristic : heuristics) {
-            score += heuristic.getValue(state);
+            score += heuristic.getValue(state) * heuristic.getWeight();
         }
         return score;
     }
