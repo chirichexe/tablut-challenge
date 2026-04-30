@@ -1,13 +1,12 @@
 package it.unibo.ai.didattica.competition.tablut.heuristic;
 
-import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 public class KingSafety implements HeuristicTablut {
 
     /* Definisce quanto il re è protetto o in pericolo immediato */
     @Override
-    public float getValue(State state, Game game) {
+    public float getValue(State state) {
 
         int[] kingPosition = state.getKingPosition();
         int freeAdjacentCells = getFreeAdjacentCells(state, kingPosition[0], kingPosition[1]);

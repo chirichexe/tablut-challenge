@@ -1,6 +1,5 @@
 package it.unibo.ai.didattica.competition.tablut.heuristic;
 
-import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 public class KingEscape implements HeuristicTablut {
@@ -10,7 +9,7 @@ public class KingEscape implements HeuristicTablut {
     * per il nero invertiamo
     */
     @Override
-    public float getValue(State state, Game game) {
+    public float getValue(State state) {
         
         int[] kingPosition = state.getKingPosition();
         // Calcola la distanza del re dai bordi della scacchiera
