@@ -1,14 +1,12 @@
 package it.unibo.ai.didattica.competition.tablut.heuristic;
 
-import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 public class Mobility implements HeuristicTablut {
 
-    /* Quante mosse può fare il re
-    */
+    /* Quante mosse può fare il re */
     @Override
-    public float getValue(State state, Game game) {
+    public float getValue(State state) {
         
         int[] kingPosition = state.getKingPosition();
 
