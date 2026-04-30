@@ -2,7 +2,7 @@ package it.unibo.ai.didattica.competition.tablut.heuristic;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
-public class OpenPaths implements HeuristicTablut {
+public class OpenPaths extends HeuristicTablut {
 
     /* Definisce il numero di vie possibili fino al bordo */
     @Override
@@ -12,6 +12,11 @@ public class OpenPaths implements HeuristicTablut {
         
         int openPaths = getOpenPaths(state, kingPosition[0], kingPosition[1]);
         return normalize(openPaths);
+    }
+
+    @Override
+    public float setWeight() {
+        return HeuristicWeights.OPEN_PATH_WEIGHT;
     }
 
     private int getOpenPaths(State state, int row, int col) {
@@ -47,6 +52,7 @@ public class OpenPaths implements HeuristicTablut {
 
     private float normalize(float paths) {
         // TODO: Implementare la normalizzazione del numero di vie aperte in un intervallo specifico, ad esempio [0, 1]
+        /* return (1 - paths/4.0); */ // Normalizza in [0, 1]
         return paths;
     }
 }

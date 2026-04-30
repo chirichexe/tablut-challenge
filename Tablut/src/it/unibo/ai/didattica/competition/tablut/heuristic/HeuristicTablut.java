@@ -2,8 +2,19 @@ package it.unibo.ai.didattica.competition.tablut.heuristic;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
-public interface HeuristicTablut {
+public abstract class HeuristicTablut {
 
-    /* Valuta un'euristica in base allo stato attuale */
-    public float getValue(State state);
+    protected final float weight;
+
+    protected HeuristicTablut() {
+        this.weight = setWeight();
+    }
+
+    protected abstract float setWeight();
+
+    public abstract float getValue(State state);
+
+    public float getWeight() {
+        return weight;
+    }
 }

@@ -2,7 +2,7 @@ package it.unibo.ai.didattica.competition.tablut.heuristic;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
-public class KingSafety implements HeuristicTablut {
+public class KingSafety extends HeuristicTablut {
 
     /* Definisce quanto il re è protetto o in pericolo immediato */
     @Override
@@ -15,6 +15,11 @@ public class KingSafety implements HeuristicTablut {
         return normalize(freeAdjacentCells * HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT -
                          adjacentEnemyCells * HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT +
                          adjacentFriendlyCells * HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT);
+    }
+
+    @Override
+    public float setWeight() {
+        return HeuristicWeights.KING_SAFETY_WEIGHT;
     }
 
     private int getFreeAdjacentCells(State state, int row, int col) {
@@ -59,6 +64,13 @@ public class KingSafety implements HeuristicTablut {
 
     private float normalize(float safety) {
         // TODO: Implementare la normalizzazione della sicurezza del re in un intervallo specifico, ad esempio [0, 1]
+        /*
+        int minValue = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 4 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente circondato da nemici
+        int maxValueFree = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 4 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente libero
+        int maxValueFriendly = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 4; // Il re è completamente circondato da amici
+        int maxValue = Math.max(maxValueFree, maxValueFriendly);
+        return ((2.0 * (safety - minValue)) / (maxValue - minValue)) - 1; // Normalizza in [-1, 1]
+        */
         return safety;
     }
 }

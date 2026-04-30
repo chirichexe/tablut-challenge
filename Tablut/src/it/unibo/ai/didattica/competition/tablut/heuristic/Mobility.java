@@ -2,7 +2,7 @@ package it.unibo.ai.didattica.competition.tablut.heuristic;
 
 import it.unibo.ai.didattica.competition.tablut.domain.State;
 
-public class Mobility implements HeuristicTablut {
+public class Mobility extends HeuristicTablut {
 
     /* Quante mosse può fare il re */
     @Override
@@ -12,6 +12,11 @@ public class Mobility implements HeuristicTablut {
 
         int mobility = getMobility(state, kingPosition[0], kingPosition[1]);
         return normalize(mobility);
+    }
+
+    @Override
+    public float setWeight() {
+        return HeuristicWeights.MOBILITY_WEIGHT;
     }
 
     private int getMobility(State state, int row, int col) {
@@ -49,6 +54,7 @@ public class Mobility implements HeuristicTablut {
 
     private float normalize(float mobility) {
         // TODO: Implementare la normalizzazione della mobilità in un intervallo specifico, ad esempio [0, 1]
+        /* return (mobility/16.0); */ // Normalizza in [0, 1]
         return mobility;
     }
 }
