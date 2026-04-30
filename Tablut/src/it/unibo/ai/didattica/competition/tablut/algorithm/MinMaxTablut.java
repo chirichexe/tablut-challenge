@@ -6,8 +6,6 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 import java.util.ArrayList;
 import java.util.List;
 
-
-
 public class MinMaxTablut {
     private final Game game;
     private final int maxDepth;
@@ -130,8 +128,8 @@ public class MinMaxTablut {
             float maxEval = Float.NEGATIVE_INFINITY;
             
             for (Action action : possibleMoves) {
-                float eval = minmax(applyMove(state, action), depth - 1);
-                maxEval = Math.max(maxEval, eval);
+                float childEvaluation = minmax(applyMove(state, action), depth - 1);
+                maxEval = Math.max(maxEval, childEvaluation);
             }
             
             return maxEval;
@@ -141,8 +139,8 @@ public class MinMaxTablut {
             float minEval = Float.POSITIVE_INFINITY;
             
             for (Action action : possibleMoves) {
-                float eval = minmax(applyMove(state, action), depth - 1);
-                minEval = Math.min(minEval, eval);
+                float childEvaluation = minmax(applyMove(state, action), depth - 1);
+                minEval = Math.min(minEval, childEvaluation);
             }
             
             return minEval;
