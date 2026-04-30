@@ -2,6 +2,8 @@ package it.unibo.ai.didattica.competition.tablut.algorithm;
 
 import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.Game;
+import it.unibo.ai.didattica.competition.tablut.domain.State;
+import it.unibo.ai.didattica.competition.tablut.domain.StateTablut;
 
 public class MinMaxTablut {
     private Game game;
@@ -25,6 +27,11 @@ public class MinMaxTablut {
         if (maximizingPlayer) 
 
         return null;
+    }
+
+    public float evaluate(State state) {
+        
+        return 0.0f;
     }
 
 }
