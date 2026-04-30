@@ -12,13 +12,18 @@ public class Mobility implements HeuristicTablut {
         
         int[] kingPosition = state.getKingPosition();
 
-        int mobility = 0;
-        mobility += countDirection(state, kingPosition[0], kingPosition[1], -1, 0); // up
-        mobility += countDirection(state, kingPosition[0], kingPosition[1], 1, 0);  // down
-        mobility += countDirection(state, kingPosition[0], kingPosition[1], 0, -1); // left
-        mobility += countDirection(state, kingPosition[0], kingPosition[1], 0, 1);  // right
-
+        int mobility = getMobility(state, kingPosition[0], kingPosition[1]);
         return normalize(mobility);
+    }
+
+    private int getMobility(State state, int row, int col) {
+        
+        int mobility = 0;
+        mobility += countDirection(state, row, col, -1, 0); // up
+        mobility += countDirection(state, row, col, 1, 0);  // down
+        mobility += countDirection(state, row, col, 0, -1); // left
+        mobility += countDirection(state, row, col, 0, 1);  // right
+        return mobility;
     }
 
     private int countDirection(State state, int row, int col, int dRow, int dCol) {
