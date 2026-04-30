@@ -1,6 +1,7 @@
 package it.unibo.ai.didattica.competition.tablut.heuristic;
 
-import it.unibo.ai.didattica.competition.tablut.domain.StateTablut;
+import it.unibo.ai.didattica.competition.tablut.domain.Game;
+import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 public class Material implements HeuristicTablut {
 
@@ -9,8 +10,15 @@ public class Material implements HeuristicTablut {
     * (ad esempio, il re potrebbe valere di più rispetto ai pedoni)
     */
     @Override
-    public float getValue(StateTablut state) {
-        // Implementazione dell'euristica per l'escape del re
-        return 0.0f;
+    public float getValue(State state, Game game) {
+
+        int whiteMaterial = state.getNumberOf(State.Pawn.WHITE);
+        int blackMaterial = state.getNumberOf(State.Pawn.BLACK);
+
+        return normalize(whiteMaterial - blackMaterial);
+    }
+
+    private float normalize(float material) {
+        return material;
     }
 }
