@@ -43,6 +43,7 @@ public class KingSafety implements HeuristicTablut {
     }
 
     private float normalize(float safety) {
+        // TODO: Implementare la normalizzazione della sicurezza del re in un intervallo specifico, ad esempio [0, 1]
         return safety;
     }
 }

@@ -19,6 +19,7 @@ public class Material implements HeuristicTablut {
     }
 
     private float normalize(float material) {
+        // TODO: Implementare la normalizzazione del materiale in un intervallo specifico, ad esempio [0, 1]
         return material;
     }
 }

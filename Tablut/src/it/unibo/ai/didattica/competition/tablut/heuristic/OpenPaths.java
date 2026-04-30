@@ -46,6 +46,7 @@ public class OpenPaths implements HeuristicTablut {
     }
 
     private float normalize(float paths) {
+        // TODO: Implementare la normalizzazione del numero di vie aperte in un intervallo specifico, ad esempio [0, 1]
         return paths;
     }
 }
