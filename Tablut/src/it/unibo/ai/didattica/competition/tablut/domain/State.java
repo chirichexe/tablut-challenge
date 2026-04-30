@@ -263,4 +263,19 @@ public abstract class State {
 		return count;
 	}
 
+	/**
+	 * Returns the position of the king on the board as an array of two integers, where the first integer is the row and the second integer is the column. If the king is not found, an IllegalStateException is thrown.
+	 * @return An array of two integers representing the position of the king on the board.
+	 */
+	public int[] getKingPosition() {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[i].length; j++) {
+				if (Pawn.KING.equals(board[i][j])) {
+					return new int[]{i, j};
+				}
+			}
+		}
+		throw new IllegalStateException("King not found in state");
+	}
+
 }
