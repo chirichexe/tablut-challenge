@@ -12,36 +12,43 @@ Il sistema estende il framework fornito e implementa un agente in Java.
 - Tablut/Executables/runmyplayer.sh: Script ufficiale per la sottomissione (puntamento a jar/classi finali).
 - Tablut/build.xml: File Ant per compilazione e gestione server.
 
-## Istruzioni per il Test
+## Istruzioni per l'Esecuzione
 
-Eseguire i comandi in terminali separati.
+Per testare l'agente con la nuova implementazione **Minimax**, segui questi passaggi da terminali separati (posizionandoti nella root del progetto):
 
-1. Compilazione:
-   ant -f Tablut/build.xml compile
+### 1. Compilazione
+Compila tutto il progetto usando Ant:
+```bash
+ant -f Tablut/build.xml compile
+```
 
-2. Avvio Server:
-   ant -f Tablut/build.xml server
+### 2. Avvio del Server
+Lancia il server che gestisce la partita (usa `-g` per la GUI se disponibile nel tuo ambiente):
+```bash
+ant -f Tablut/build.xml gui-server
+```
 
-3. Avvio Giocatore (Student):
-   ./Tablut/Executables/run_student.sh WHITE 60 localhost
+### 3. Avvio del tuo Agente (Minimax)
+Lancia il client `TablutStudentClient` (che ora usa l'algoritmo Minimax):
+```bash
+java -cp "Tablut/lib/*:Tablut/build" it.unibo.ai.didattica.competition.tablut.client.TablutStudentClient WHITE 60 localhost
+```
+*Nota: Puoi cambiare `WHITE` con `BLACK` a seconda del ruolo desiderato.*
 
-4. Avvio Avversario (Random):
-   ant -f Tablut/build.xml randomblack
+### 4. Avvio dell'Avversario
+Lancia un giocatore casuale per testare la risposta del tuo agente:
+```bash
+ant -f Tablut/build.xml randomblack
+```
+*(Oppure `randomwhite` se il tuo agente è BLACK).*
 
-## Implementazione Logica AI
+## Implementazione AI Corrente
 
-Sviluppare le seguenti componenti in TablutStudentClient.java:
-
-1. Ricerca: Minimax con Alpha-Beta Pruning.
-   - Utilizzare state.clone() per le simulazioni.
-   - Utilizzare rules.checkMove(state, action) per validare le mosse.
-
-2. Valutazione: Funzione di euristica per l'assegnazione di un punteggio agli stati.
-   - Bianco: priorità alla fuga del Re e controllo dei percorsi verso le escape tiles.
-   - Nero: priorità alla cattura e all'accerchiamento del Re.
-
-3. Gestione Tempo: Iterative Deepening.
-   - Monitorare System.currentTimeMillis() per interrompere la ricerca prima del timeout di 60 secondi.
+L'agente attualmente utilizza:
+- **Algoritmo**: Minimax puro (senza Alpha-Beta pruning per ora).
+- **Profondità**: Impostata a 2 livelli (modificabile in `TablutStudentClient.java`).
+- **Euristica**: Mock basata sulla differenza di materiale (pedine bianche + re vs pedine nere).
+- **Generatore di Mosse**: Integrato in `MinMaxTablut.java`, utilizza le regole ufficiali per validare ogni mossa.
 
 ## Vincoli Tecnici
 - Timeout: 60 secondi per mossa (imposto dal server).
