@@ -5,8 +5,7 @@ import it.unibo.ai.didattica.competition.tablut.domain.State;
 
 public class Mobility implements HeuristicTablut {
 
-    /* Quante mosse può fare il re
-    */
+    /* Quante mosse può fare il re */
     @Override
     public float getValue(State state, Game game) {
         

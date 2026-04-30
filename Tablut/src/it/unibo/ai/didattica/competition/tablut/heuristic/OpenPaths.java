@@ -10,6 +10,7 @@ public class OpenPaths implements HeuristicTablut {
     public float getValue(State state, Game game) {
         
         int[] kingPosition = state.getKingPosition();
+        
         int openPaths = getOpenPaths(state, kingPosition[0], kingPosition[1]);
         return normalize(openPaths);
     }
