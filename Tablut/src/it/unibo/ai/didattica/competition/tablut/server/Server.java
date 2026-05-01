@@ -658,21 +658,36 @@ public class Server implements Runnable {
 				tin = Turnblack;
 				break;
 			case BLACKWIN:
-				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: PLAYER BLACK WIN");
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.game.endGame(state);
 				endgame = true;
 				break;
 			case WHITEWIN:
-				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: PLAYER WHITE WIN");
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.game.endGame(state);
 				endgame = true;
 				break;
 			case DRAW:
-				this.game.endGame(state);
 				System.out.println("END OF THE GAME");
 				System.out.println("RESULT: DRAW");
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.game.endGame(state);
 				endgame = true;
 				break;
 			default:
