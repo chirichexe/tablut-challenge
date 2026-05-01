@@ -74,8 +74,23 @@ public class MinMaxTablut {
                 // oppure fino ad uno stato terminale
                 // calcola minmax per la mossa
                 // Dopo il bianco (max), tocca al nero (min)
-                float value = minmax(applyMove(state, actionToEvaluate), maxDepth - 1);
                 
+                /* MinMax */
+                /* 
+                float value = minmax(
+                    applyMove(state, actionToEvaluate), 
+                    maxDepth - 1
+                );
+                */
+
+                /* AlfaBeta */
+                float value = alphaBeta(
+                    applyMove(state, actionToEvaluate),
+                    maxDepth - 1,
+                    Float.NEGATIVE_INFINITY,  // alpha iniziale
+                    Float.POSITIVE_INFINITY   // beta iniziale
+                );      
+
                 // se il valore è migliore del miglior valore trovato finora, 
                 // aggiorna il miglior valore e la miglior mossa
                 if (value > bestValue) {
@@ -93,7 +108,22 @@ public class MinMaxTablut {
                 // oppure fino ad uno stato terminale
                 // calcola minmax per la mossa
                 // Dopo il nero (min), tocca al bianco (max)
-                float value = minmax(applyMove(state, actionToEvaluate), maxDepth - 1);
+                
+                /* MinMax */
+                /*
+                float value = minmax(
+                    applyMove(state, actionToEvaluate), 
+                    maxDepth - 1
+                );
+                */
+
+                /* AlfaBeta */
+                float value = alphaBeta(
+                    applyMove(state, actionToEvaluate),
+                    maxDepth - 1,
+                    Float.NEGATIVE_INFINITY,  // alpha iniziale
+                    Float.POSITIVE_INFINITY   // beta iniziale
+                );
                 
                 // se il valore è migliore (minore) del miglior valore trovato finora, 
                 // aggiorna il miglior valore e la miglior mossa
