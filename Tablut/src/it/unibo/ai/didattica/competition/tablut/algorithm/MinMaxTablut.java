@@ -151,10 +151,13 @@ public class MinMaxTablut {
         return evaluator.evaluate(state);
     }
 
+    /*
+    
+    */
     
     private List<Action> getMovesForPawn(State state, int row, int col) {
         List<Action> moves = new ArrayList<>();
-        int boardSize = 9; 
+        int boardSize = state.getBoard().length;
         int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
         for (int[] dir : directions) {
