@@ -24,11 +24,11 @@ public class Material extends HeuristicTablut {
 
     private float normalize(float material) {
         // TODO: Implementare la normalizzazione del materiale in un intervallo specifico, ad esempio [0, 1]
-        /*
-        int minValue = HeuristicWeights.MATERIAL_WHITE_VALUE * 0 - HeuristicWeights.MATERIAL_BLACK_VALUE * 16; // Tutti i pedoni neri e nessun pedone bianco
-        int maxValue = HeuristicWeights.MATERIAL_WHITE_VALUE * 8 - HeuristicWeights.MATERIAL_BLACK_VALUE * 0; // Tutti i pedoni bianchi e nessun pedone nero
-        return ((2.0 * (material - minValue)) / (maxValue - minValue)) - 1; // Normalizza in [-1, 1]
-        */
-        return material;
+        
+        float minValue = HeuristicWeights.MATERIAL_WHITE_VALUE * 0 - HeuristicWeights.MATERIAL_BLACK_VALUE * 16; // Tutti i pedoni neri e nessun pedone bianco
+        float maxValue = HeuristicWeights.MATERIAL_WHITE_VALUE * 8 - HeuristicWeights.MATERIAL_BLACK_VALUE * 0; // Tutti i pedoni bianchi e nessun pedone nero
+        return ((2.0f * (material - minValue)) / (maxValue - minValue)) - 1.0f; // Normalizza in [-1, 1]
+        
+        //return material;
     }
 }

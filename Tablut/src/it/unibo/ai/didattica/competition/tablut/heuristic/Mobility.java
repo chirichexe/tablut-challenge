@@ -54,7 +54,7 @@ public class Mobility extends HeuristicTablut {
 
     private float normalize(float mobility) {
         // TODO: Implementare la normalizzazione della mobilità in un intervallo specifico, ad esempio [0, 1]
-        /* return (mobility/16.0); */ // Normalizza in [0, 1]
-        return mobility;
+        return (mobility/16.0f);  // Normalizza in [0, 1]
+        //return mobility;
     }
 }

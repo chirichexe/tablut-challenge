@@ -24,11 +24,11 @@ public class KingEscape extends HeuristicTablut {
         return HeuristicWeights.KING_ESCAPE_WEIGHT;
     }
 
-    private float normalize(float distance) {
+    private float normalize(int distance) {
         // TODO: Implementare la normalizzazione della distanza in un intervallo specifico, ad esempio [0, 1]
         /* return (1 - distance/4.0); */
-        /* return (1 - distance/8.0); */
-        return distance;
+        return (1.0f - distance/8.0f); // Normalizza in [0, 1]
+        // return distance;
     }
 
 

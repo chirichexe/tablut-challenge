@@ -62,15 +62,15 @@ public class KingSafety extends HeuristicTablut {
         return enemyCells;
     }
 
-    private float normalize(float safety) {
+    private float normalize(float  safety) {
         // TODO: Implementare la normalizzazione della sicurezza del re in un intervallo specifico, ad esempio [0, 1]
-        /*
-        int minValue = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 4 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente circondato da nemici
-        int maxValueFree = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 4 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente libero
-        int maxValueFriendly = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 4; // Il re è completamente circondato da amici
-        int maxValue = Math.max(maxValueFree, maxValueFriendly);
-        return ((2.0 * (safety - minValue)) / (maxValue - minValue)) - 1; // Normalizza in [-1, 1]
-        */
-        return safety;
+        
+        float minValue = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 4 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente circondato da nemici
+        float maxValueFree = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 4 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 0; // Il re è completamente libero
+        float maxValueFriendly = HeuristicWeights.KING_SAFETY_FREE_CELLS_WEIGHT * 0 - HeuristicWeights.KING_SAFETY_ENEMY_CELLS_WEIGHT * 0 + HeuristicWeights.KING_SAFETY_FRIENDLY_CELLS_WEIGHT * 4; // Il re è completamente circondato da amici
+        float maxValue = Math.max(maxValueFree, maxValueFriendly);
+        return ((2.0f * (safety - minValue)) / (maxValue - minValue)) - 1.0f; // Normalizza in [-1, 1]
+        
+        //return safety;
     }
 }

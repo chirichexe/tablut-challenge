@@ -50,9 +50,9 @@ public class OpenPaths extends HeuristicTablut {
         return 1;
     }
 
-    private float normalize(float paths) {
+    private float normalize(int paths) {
         // TODO: Implementare la normalizzazione del numero di vie aperte in un intervallo specifico, ad esempio [0, 1]
-        /* return (1 - paths/4.0); */ // Normalizza in [0, 1]
-        return paths;
+        return (1.0f - paths/4.0f); // Normalizza in [0, 1]
+        //return paths;
     }
 }
