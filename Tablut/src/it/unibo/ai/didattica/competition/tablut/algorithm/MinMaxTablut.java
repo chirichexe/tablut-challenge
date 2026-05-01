@@ -152,6 +152,47 @@ public class MinMaxTablut {
     }
 
     /*
+    Algoritmo AlfaBeta
+    */
+    private float alphaBeta(State state, int depth, float alpha, float beta) {
+        
+        // STATO TERMINALE (oppure ho terminato la profondità minima da raggiungere): non faccio niente, uso il valore restituito
+        if (depth == 0 || isTerminal(state)) {
+            return evaluator.evaluate(state);
+        }
+
+        List<Action> possibleMoves = getPossibleMoves(state);
+        if (possibleMoves.isEmpty()) {
+            return evaluator.evaluate(state);
+        }
+
+        State.Turn turn = state.getTurn();
+
+        if (turn == State.Turn.WHITE) { /* se è MAX: sceglie il valore massimo tra i figli */
+            float maxEval = Float.NEGATIVE_INFINITY;
+            for (Action action : possibleMoves) {
+                float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
+                maxEval = Math.max(maxEval, childEval);
+                alpha = Math.max(alpha, childEval);
+                if (beta <= alpha) break;      // beta cutoff (potatura)
+            }
+            return maxEval;
+
+        } else if (turn == State.Turn.BLACK) { /* se è MIN: sceglie il valore minimo tra i figli */
+            float minEval = Float.POSITIVE_INFINITY;
+            for (Action action : possibleMoves) {
+                float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
+                minEval = Math.min(minEval, childEval);
+                beta = Math.min(beta, childEval);
+                if (beta <= alpha) break;      // alpha cutoff (potatura)
+            }
+            return minEval;
+        }
+
+        return evaluator.evaluate(state);
+    }
+
+    /*
     
     */
     
