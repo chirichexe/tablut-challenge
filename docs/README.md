@@ -3,8 +3,7 @@
 - Algoritmo minmax
 - Alpha-beta pruning
 - Euristiche di valutazione
-- Killer Moves
 
-# Cosa dobbiamo ancora fare
+- Iterative Deepening: gestisce il tempo esplorando progressivamente l'albero di gioco con profondita crescente
 
-- Iterative Deepening Search (IDS)
+- Killer Moves: se un taglio alfa beta è avvenuto, memorizza la mossa come "killer" per quel livello di profondità, e la valuta prima delle altre mosse nelle iterazioni successive

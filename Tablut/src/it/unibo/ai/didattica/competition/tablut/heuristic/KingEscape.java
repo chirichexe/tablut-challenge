@@ -25,10 +25,10 @@ public class KingEscape extends HeuristicTablut {
     }
 
     private float normalize(int distance) {
-        // TODO: Implementare la normalizzazione della distanza in un intervallo specifico, ad esempio [0, 1]
-        /* return (1 - distance/4.0); */
-        return (1.0f - distance/8.0f); // Normalizza in [0, 1]
-        // return distance;
+        // Normalizza la distanza del re dai bordi in [-1.0, 1.0]
+        // Distanza minore = re più vicino al bordo = migliore per il Bianco
+        // Formula: quanto più il re è vicino al bordo (distanza bassa), tanto più positivo è il valore
+        return 1.0f - (distance / 8.0f) * 2.0f; // Normalizza in [-1, 1]
     }
 
 

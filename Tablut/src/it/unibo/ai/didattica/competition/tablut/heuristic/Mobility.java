@@ -53,8 +53,8 @@ public class Mobility extends HeuristicTablut {
     }
 
     private float normalize(float mobility) {
-        // TODO: Implementare la normalizzazione della mobilità in un intervallo specifico, ad esempio [0, 1]
-        return (mobility/16.0f);  // Normalizza in [0, 1]
-        //return mobility;
+        // Normalizza la mobilità del re in [-1.0, 1.0]
+        // Più mosse disponibili = migliore per il Bianco
+        return (mobility / 8.0f) - 1.0f; // Normalizza in [-1, 1]
     }
 }

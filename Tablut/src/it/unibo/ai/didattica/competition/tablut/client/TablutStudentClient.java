@@ -116,6 +116,9 @@ public class TablutStudentClient extends TablutClient {
 			} catch (InterruptedException e) {
 			}
 
+			// Forse da cambiare 
+			int timeout = 60; 
+
 			if (this.getPlayer().equals(Turn.WHITE)) { /* siamo bianchi */
 				// Mio turno
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.WHITE)) {
@@ -124,7 +127,7 @@ public class TablutStudentClient extends TablutClient {
 					
 					// Da rivedere: attualmente timeout fisso a 2 secondi, ma sarebbe 
 					// meglio implementare un Iterative Deepening con un timeout
-					Action a = minMax.search(state, 2);
+					Action a = minMax.search(state, timeout);
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {
@@ -161,7 +164,7 @@ public class TablutStudentClient extends TablutClient {
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.BLACK)) {
 					
 					System.out.println("Computing best move...");
-					Action a = minMax.search(state, 2);
+					Action a = minMax.search(state, timeout );
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {

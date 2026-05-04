@@ -3,44 +3,54 @@ package it.unibo.ai.didattica.competition.tablut.algorithm;
 import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MoveGenerator {
     private final Game game;
+    
+    // direzioni di movimento
+    private static final int[][] DIRECTIONS = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
     public MoveGenerator(Game game) {
         this.game = game;
     }
 
     /**
-     * Genera tutte le mosse possibili per il giocatore di turno.
+     * Genera tutte le mosse possibili riempiendo la lista fornita come argomento
      */
-    public List<Action> getPossibleMoves(State state) {
-        List<Action> moves = new ArrayList<>();
+    public void generateMoves(State state, List<Action> moves) {
+
+        // pulisce la lista 
+        moves.clear();
+
+        // ottiene la griglia attuale e il turno
         State.Pawn[][] board = state.getBoard();
         State.Turn turn = state.getTurn();
 
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
+        int boardSize = board.length;
+        for (int i = 0; i < boardSize; i++) {
+            for (int j = 0; j < boardSize; j++) {
+
+                // se la casella contiene una pedina del giocatore di turno
                 if (isOwnPawn(turn, board[i][j])) {
-                    moves.addAll(getMovesForPawn(state, i, j));
+
+                    // genero le mosse per quella pedina
+                    addMovesForPawn(state, i, j, moves);
                 }
             }
         }
-        return moves;
     }
 
     /*
     * Restituisce tutte le mosse possibili per una pedina data la sua posizione
     */
-    private List<Action> getMovesForPawn(State state, int row, int col) {
-        List<Action> moves = new ArrayList<>();
+    private void addMovesForPawn(State state, int row, int col, List<Action> moves) {
         int boardSize = state.getBoard().length;
-        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
 
-        for (int[] dir : directions) {
+        // esplora tutte le direzioni
+        for (int[] dir : DIRECTIONS) {
             for (int dist = 1; dist < boardSize; dist++) {
+
                 int nextRow = row + dir[0] * dist;
                 int nextCol = col + dir[1] * dist;
 
@@ -49,17 +59,18 @@ public class MoveGenerator {
                 try {
                     Action action = createAction(state, row, col, nextRow, nextCol);
                     
-                    // Verifica la mossa tramite le regole del gioco
+                    // verifica la mossa tramite le regole del gioco
                     game.checkMove(state.clone(), action);
-
+                    
+                    // se la mossa è valida, aggiungila alla lista
                     moves.add(action);
+
                 } catch (Exception e) {
-                    // Mossa non valida (es. ostacolo), interrompi la direzione
+                    // Mossa non valida, interrompe l'esplorazione in questa direzione
                     break;
                 }
             }
         }
-        return moves;
     }
 
     /*
@@ -82,6 +93,10 @@ public class MoveGenerator {
             throw new RuntimeException("Mossa non valida generata: " + action, e);
         }
     }
+
+    /*****************************************************************************/
+    // funzioni di utilità
+    /*****************************************************************************/
 
     /*
     * Controlla se la pedina appartiene al giocatore del turno corrente

@@ -51,8 +51,12 @@ public class OpenPaths extends HeuristicTablut {
     }
 
     private float normalize(int paths) {
-        // TODO: Implementare la normalizzazione del numero di vie aperte in un intervallo specifico, ad esempio [0, 1]
-        return (1.0f - paths/4.0f); // Normalizza in [0, 1]
-        //return paths;
+        // Se il re ha 2 o più vie di fuga libere, è una condizione di vittoria matematica per il Bianco
+        if (paths >= 2) {
+            return 0.8f; // Assegna un punteggio drasticamente alto (prossimo al valore di vittoria)
+        }
+        // Normalizza il numero di vie aperte in [-1.0, 1.0]
+        // paths = 0 -> -1.0, paths = 1 -> -0.5, paths = 2+ -> 0.8 (vedi sopra)
+        return (paths / 2.0f) - 1.0f; // Normalizza in [-1, 1]
     }
 }

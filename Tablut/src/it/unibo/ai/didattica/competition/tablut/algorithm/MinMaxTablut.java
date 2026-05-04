@@ -3,6 +3,7 @@ package it.unibo.ai.didattica.competition.tablut.algorithm;
 import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MinMaxTablut {
@@ -19,9 +20,9 @@ public class MinMaxTablut {
     }
 
     /**
-     * Metodo principale per l'Iterative Deepening.
-     * Sostituisce la chiamata diretta a getBestMove nel Client.
-     */
+     * Iterative Deepening: è come un supplier che restituisce la miglior mossa trovata finora,
+     * continua a cercare finché non scade il timeout
+    */
     public Action search(State state, int timeoutSeconds) {
         long startTime = System.currentTimeMillis();
         long maxTime = (timeoutSeconds - 2) * 1000L; // Margine di sicurezza di 2 secondi
@@ -32,10 +33,10 @@ public class MinMaxTablut {
             long elapsed = System.currentTimeMillis() - startTime;
             if (elapsed > maxTime) break;
 
-            System.out.println("Searching at depth: " + currentDepth + " (Elapsed: " + elapsed + "ms)");
-            
+            // ricerca a profondità currentDepth            
             Action currentBest = getBestMove(state, currentDepth);
             
+
             if (currentBest != null) {
                 bestActionSoFar = currentBest;
             }
@@ -44,8 +45,15 @@ public class MinMaxTablut {
         return bestActionSoFar;
     }
 
+    /**
+     * Restituisce la miglior mossa trovata a partire dallo stato dato, 
+     * esplorando l'albero fino alla profondità specificata
+     */
     public Action getBestMove(State state, int depth) {
-        List<Action> possibleMoves = moveGenerator.getPossibleMoves(state);
+
+        // ottengo tutte le mosse possibili dallo stato attuale
+        List<Action> possibleMoves = new ArrayList<>();
+        moveGenerator.generateMoves(state, possibleMoves);
 
         if (possibleMoves.isEmpty()) {
             return null;
@@ -112,7 +120,7 @@ public class MinMaxTablut {
     }
 
     /*
-    Algoritmo AlfaBeta
+    * Algoritmo AlfaBeta
     */
     private float alphaBeta(State state, int depth, float alpha, float beta) {
         
@@ -122,7 +130,8 @@ public class MinMaxTablut {
         }
 
         // ottengo tutte le mosse possibili 
-        List<Action> possibleMoves = moveGenerator.getPossibleMoves(state);
+        List<Action> possibleMoves = new ArrayList<>();
+        moveGenerator.generateMoves(state, possibleMoves);
         
         // ordino le mosse in modo da valutare prima quelle ricordate come killer moves 
         // per questo livello di profondità
@@ -143,6 +152,9 @@ public class MinMaxTablut {
         }
     }
 
+    /*
+     * Calcola il valore massimo per il giocatore che massimizza
+     */
     private float maxValue(State state, List<Action> moves, int depth, float alpha, float beta) {
         float maxEval = Float.NEGATIVE_INFINITY;
         for (Action action : moves) {
@@ -163,6 +175,9 @@ public class MinMaxTablut {
         return maxEval;
     }
 
+    /*
+     * Calcola il valore minimo per il giocatore che minimizza
+     */
     private float minValue(State state, List<Action> moves, int depth, float alpha, float beta) {
         float minEval = Float.POSITIVE_INFINITY;
         for (Action action : moves) {
@@ -183,6 +198,10 @@ public class MinMaxTablut {
         return minEval;
     }
 
+    /*
+     * Ordina le mosse in modo da valutare prima quelle ricordate come killer moves 
+     * per questo livello di profondità
+     */
     private void orderMovesByKillerHeuristic(List<Action> moves, int depth) {
         moves.sort((a, b) -> Integer.compare(
             killerHeuristic.getKillerScore(b, depth), 
@@ -194,6 +213,9 @@ public class MinMaxTablut {
     // Funzioni di utilità 
     /************************************************************************************ */
     
+    /*
+     * se deve massimizzare (bianco) o minimizzare (nero)
+     */
     private boolean isMaximizing(State.Turn turn) {
         return turn == State.Turn.WHITE;
     }
