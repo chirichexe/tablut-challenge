@@ -3,63 +3,49 @@ package it.unibo.ai.didattica.competition.tablut.algorithm;
 import it.unibo.ai.didattica.competition.tablut.domain.Action;
 import it.unibo.ai.didattica.competition.tablut.domain.Game;
 import it.unibo.ai.didattica.competition.tablut.domain.State;
-import java.util.ArrayList;
 import java.util.List;
 
 public class MinMaxTablut {
-    private final Game game;
     private final int maxDepth;
     private final Evaluator evaluator;
     private final KillerHeuristic killerHeuristic;
+    private final MoveGenerator moveGenerator;
 
     public MinMaxTablut(Game game, int maxDepth) {
-        this.game = game;
         this.maxDepth = maxDepth;
         this.evaluator = new Evaluator();
         this.killerHeuristic = new KillerHeuristic(maxDepth);
-    }
-
-    /*
-    * Controlla se la pedina appartiene al giocatore del turno corrente
-    */
-    private boolean isOwnPawn(State.Turn turn, State.Pawn pawn) {
-        if (turn == State.Turn.WHITE) {
-            return pawn == State.Pawn.WHITE || pawn == State.Pawn.KING;
-        } else if (turn == State.Turn.BLACK) {
-            return pawn == State.Pawn.BLACK;
-        }
-        return false;
+        this.moveGenerator = new MoveGenerator(game);
     }
 
     /**
-     * Genera tutte le mosse possibili per il giocatore di turno.
+     * Metodo principale per l'Iterative Deepening.
+     * Sostituisce la chiamata diretta a getBestMove nel Client.
      */
-    private List<Action> getPossibleMoves(State state) {
-        List<Action> moves = new ArrayList<>();
-        State.Pawn[][] board = state.getBoard();
-        State.Turn turn = state.getTurn();
+    public Action search(State state, int timeoutSeconds) {
+        long startTime = System.currentTimeMillis();
+        long maxTime = (timeoutSeconds - 2) * 1000L; // Margine di sicurezza di 2 secondi
+        Action bestActionSoFar = null;
 
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if (isOwnPawn(turn, board[i][j])) {
-                    moves.addAll(getMovesForPawn(state, i, j));
-                }
+        // Partiamo da profondità 1 e aumentiamo progressivamente
+        for (int currentDepth = 1; currentDepth <= maxDepth; currentDepth++) {
+            long elapsed = System.currentTimeMillis() - startTime;
+            if (elapsed > maxTime) break;
+
+            System.out.println("Searching at depth: " + currentDepth + " (Elapsed: " + elapsed + "ms)");
+            
+            Action currentBest = getBestMove(state, currentDepth);
+            
+            if (currentBest != null) {
+                bestActionSoFar = currentBest;
             }
         }
-        return moves;
+        
+        return bestActionSoFar;
     }
 
-    /**
-     * se è terminale
-     */
-    private boolean isTerminal(State state) {
-        State.Turn turn = state.getTurn();
-        return turn == State.Turn.WHITEWIN || turn == State.Turn.BLACKWIN || turn == State.Turn.DRAW;
-    }
-
-
-    public Action getBestMove(State state) {
-        List<Action> possibleMoves = getPossibleMoves(state);
+    public Action getBestMove(State state, int depth) {
+        List<Action> possibleMoves = moveGenerator.getPossibleMoves(state);
 
         if (possibleMoves.isEmpty()) {
             return null;
@@ -67,29 +53,22 @@ public class MinMaxTablut {
         
         Action bestAction = null;
         State.Turn turn = state.getTurn();
-        
-        if (turn == State.Turn.WHITE) { /* siamo bianchi */
+        boolean maximizing = isMaximizing(turn);
+
+        if (maximizing) { /* siamo bianchi */
             // il bianco cerca di massimizzare il punteggio, partendo da un valore -inf
             float bestValue = Float.NEGATIVE_INFINITY;
             
             for (Action actionToEvaluate : possibleMoves) {
-                // espandiamo l'albero fino a profondità 
+                // espandiamo l'albero fino a profondità maxDepth
                 // oppure fino ad uno stato terminale
                 // calcola minmax per la mossa
                 // Dopo il bianco (max), tocca al nero (min)
                 
-                /* MinMax */
-                /* 
-                float value = minmax(
-                    applyMove(state, actionToEvaluate), 
-                    maxDepth - 1
-                );
-                */
-
                 /* AlfaBeta */
                 float value = alphaBeta(
-                    applyMove(state, actionToEvaluate),
-                    maxDepth - 1,
+                    moveGenerator.applyMove(state, actionToEvaluate),
+                    depth - 1,
                     Float.NEGATIVE_INFINITY,  // alpha iniziale
                     Float.POSITIVE_INFINITY   // beta iniziale
                 );      
@@ -102,7 +81,7 @@ public class MinMaxTablut {
                 }
             }
 
-        } else if (turn == State.Turn.BLACK) { /* siamo neri */
+        } else { /* siamo neri */
             // il nero cerca di minimizzare il punteggio, partendo da un valore +inf
             float bestValue = Float.POSITIVE_INFINITY;
             
@@ -112,18 +91,10 @@ public class MinMaxTablut {
                 // calcola minmax per la mossa
                 // Dopo il nero (min), tocca al bianco (max)
                 
-                /* MinMax */
-                /*
-                float value = minmax(
-                    applyMove(state, actionToEvaluate), 
-                    maxDepth - 1
-                );
-                */
-
                 /* AlfaBeta */
                 float value = alphaBeta(
-                    applyMove(state, actionToEvaluate),
-                    maxDepth - 1,
+                    moveGenerator.applyMove(state, actionToEvaluate),
+                    depth - 1,
                     Float.NEGATIVE_INFINITY,  // alpha iniziale
                     Float.POSITIVE_INFINITY   // beta iniziale
                 );
@@ -140,7 +111,6 @@ public class MinMaxTablut {
         return bestAction;
     }
 
-
     /*
     Algoritmo AlfaBeta
     */
@@ -152,7 +122,7 @@ public class MinMaxTablut {
         }
 
         // ottengo tutte le mosse possibili 
-        List<Action> possibleMoves = getPossibleMoves(state);
+        List<Action> possibleMoves = moveGenerator.getPossibleMoves(state);
         
         // ordino le mosse in modo da valutare prima quelle ricordate come killer moves 
         // per questo livello di profondità
@@ -166,89 +136,51 @@ public class MinMaxTablut {
         // NON TERMINALE, continuo a espandere l'albero
         State.Turn turn = state.getTurn();
 
-        if (turn == State.Turn.WHITE) { /* se è MAX: sceglie il valore massimo tra i figli */
-            float maxEval = Float.NEGATIVE_INFINITY;
-            for (Action action : possibleMoves) {
-                float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
-                maxEval = Math.max(maxEval, childEval);
-                alpha = Math.max(alpha, childEval);
+        if (isMaximizing(turn)) { /* se è MAX: sceglie il valore massimo tra i figli */
+            return maxValue(state, possibleMoves, depth, alpha, beta);
+        } else { /* se è MIN: sceglie il valore minimo tra i figli */
+            return minValue(state, possibleMoves, depth, alpha, beta);
+        }
+    }
+
+    private float maxValue(State state, List<Action> moves, int depth, float alpha, float beta) {
+        float maxEval = Float.NEGATIVE_INFINITY;
+        for (Action action : moves) {
+            float childEval = alphaBeta(moveGenerator.applyMove(state, action), depth - 1, alpha, beta);
+            maxEval = Math.max(maxEval, childEval);
+            alpha = Math.max(alpha, childEval);
+            
+            if (beta <= alpha) { // beta cutoff (potatura)
                 
-                if (beta <= alpha) { // beta cutoff (potatura)
-                    
-                    // questa mossa è ottima per il bianco, ma pessima per il nero, 
-                    // non serve più esplorare le altre mosse a questo livello
-                    // la memorizzo come killer move per questo livello di profondità
-                    killerHeuristic.addKillerMove(action, depth);
+                // questa mossa è ottima per il bianco, ma pessima per il nero, 
+                // non serve più esplorare le altre mosse a questo livello
+                // la memorizzo come killer move per questo livello di profondità
+                killerHeuristic.addKillerMove(action, depth);
 
-                    break;
-                }      
-            }
-            return maxEval;
-
-        } else if (turn == State.Turn.BLACK) { /* se è MIN: sceglie il valore minimo tra i figli */
-            float minEval = Float.POSITIVE_INFINITY;
-            for (Action action : possibleMoves) {
-                float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
-                minEval = Math.min(minEval, childEval);
-                beta = Math.min(beta, childEval);
-
-                if (beta <= alpha) { // alpha cutoff (potatura) 
-                    
-                    // questa mossa è ottima per il nero, ma pessima per il bianco, 
-                    // non serve più esplorare le altre mosse a questo livello
-                    // la memorizzo come killer move per questo livello di profondità
-                    killerHeuristic.addKillerMove(action, depth);
-
-                    break; 
-                }      
-            }
-            return minEval;
+                break;
+            }      
         }
-
-        return evaluator.evaluate(state);
+        return maxEval;
     }
 
-    /*
-    
-    */
-    
-    private List<Action> getMovesForPawn(State state, int row, int col) {
-        List<Action> moves = new ArrayList<>();
-        int boardSize = state.getBoard().length;
-        int[][] directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    private float minValue(State state, List<Action> moves, int depth, float alpha, float beta) {
+        float minEval = Float.POSITIVE_INFINITY;
+        for (Action action : moves) {
+            float childEval = alphaBeta(moveGenerator.applyMove(state, action), depth - 1, alpha, beta);
+            minEval = Math.min(minEval, childEval);
+            beta = Math.min(beta, childEval);
 
-        for (int[] dir : directions) {
-            for (int dist = 1; dist < boardSize; dist++) {
-                int nextRow = row + dir[0] * dist;
-                int nextCol = col + dir[1] * dist;
+            if (beta <= alpha) { // alpha cutoff (potatura) 
+                
+                // questa mossa è ottima per il nero, ma pessima per il bianco, 
+                // non serve più esplorare le altre mosse a questo livello
+                // la memorizzo come killer move per questo livello di profondità
+                killerHeuristic.addKillerMove(action, depth);
 
-                if (nextRow < 0 || nextRow >= boardSize || nextCol < 0 || nextCol >= boardSize) break;
-
-                try {
-                    String from = state.getBox(row, col);
-                    String to = state.getBox(nextRow, nextCol);
-                    Action action = new Action(from, to, state.getTurn());
-                    
-                    // Verifica la mossa tramite le regole del gioco
-                    game.checkMove(state.clone(), action);
-
-                    moves.add(action);
-                } catch (Exception e) {
-                    // Mossa non valida (es. ostacolo), interrompi la direzione
-                    break;
-                }
-            }
+                break; 
+            }      
         }
-        return moves;
-    }
-
-    private State applyMove(State state, Action action) {
-        try {
-            // checkMove restituisce il nuovo stato risultante (con catture applicate)
-            return game.checkMove(state.clone(), action);
-        } catch (Exception e) {
-            throw new RuntimeException("Mossa non valida generata: " + action, e);
-        }
+        return minEval;
     }
 
     private void orderMovesByKillerHeuristic(List<Action> moves, int depth) {
@@ -258,4 +190,19 @@ public class MinMaxTablut {
         ));
     }
 
+    /************************************************************************************ */
+    // Funzioni di utilità 
+    /************************************************************************************ */
+    
+    private boolean isMaximizing(State.Turn turn) {
+        return turn == State.Turn.WHITE;
+    }
+
+    /**
+     * se è terminale
+     */
+    private boolean isTerminal(State state) {
+        State.Turn turn = state.getTurn();
+        return turn == State.Turn.WHITEWIN || turn == State.Turn.BLACKWIN || turn == State.Turn.DRAW;
+    }
 }

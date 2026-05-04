@@ -1,11 +1,10 @@
 package it.unibo.ai.didattica.competition.tablut.client;
 
-import java.io.IOException;
-import java.net.UnknownHostException;
-
+import it.unibo.ai.didattica.competition.tablut.algorithm.MinMaxTablut;
 import it.unibo.ai.didattica.competition.tablut.domain.*;
 import it.unibo.ai.didattica.competition.tablut.domain.State.Turn;
-import it.unibo.ai.didattica.competition.tablut.algorithm.MinMaxTablut;
+import java.io.IOException;
+import java.net.UnknownHostException;
 
 /**
  * 
@@ -122,7 +121,10 @@ public class TablutStudentClient extends TablutClient {
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.WHITE)) {
 					
 					System.out.println("Computing best move...");
-					Action a = minMax.getBestMove(state);
+					
+					// Da rivedere: attualmente timeout fisso a 2 secondi, ma sarebbe 
+					// meglio implementare un Iterative Deepening con un timeout
+					Action a = minMax.search(state, 2);
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {
@@ -159,7 +161,7 @@ public class TablutStudentClient extends TablutClient {
 				if (this.getCurrentState().getTurn().equals(StateTablut.Turn.BLACK)) {
 					
 					System.out.println("Computing best move...");
-					Action a = minMax.getBestMove(state);
+					Action a = minMax.search(state, 2);
 
 					System.out.println("Mossa scelta: " + a.toString());
 					try {

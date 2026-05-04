@@ -55,3 +55,21 @@ L'agente attualmente utilizza:
 - Regole: Ashton Tablut (9x9).
 - Risorse: Il processo deve essere autonomo e non richiedere connessione internet.
 - Log: Limitare l'output su stdout per evitare la saturazione del disco nella VM.
+
+## Sopprimere i log in esecuzione
+
+Per ridurre il peso dei log durante i test:
+
+1. Nascondi completamente output standard ed errori:
+```bash
+ant -f Tablut/build.xml server > /dev/null 2>&1
+java -cp "Tablut/lib/*:Tablut/build" it.unibo.ai.didattica.competition.tablut.client.TablutStudentClient WHITE 60 localhost > /dev/null 2>&1
+```
+2. Se vuoi vedere solo gli errori:
+```bash
+ant -f Tablut/build.xml server > /dev/null
+```
+3. Il server salva anche file di log in `Tablut/logs/`; per pulirli:
+```bash
+rm -f Tablut/logs/*_systemLog.txt Tablut/logs/*_gameLog.txt
+```
