@@ -10,11 +10,13 @@ public class MinMaxTablut {
     private final Game game;
     private final int maxDepth;
     private final Evaluator evaluator;
+    private final KillerHeuristic killerHeuristic;
 
     public MinMaxTablut(Game game, int maxDepth) {
         this.game = game;
         this.maxDepth = maxDepth;
         this.evaluator = new Evaluator();
+        this.killerHeuristic = new KillerHeuristic(maxDepth);
     }
 
     /*
@@ -54,6 +56,7 @@ public class MinMaxTablut {
         State.Turn turn = state.getTurn();
         return turn == State.Turn.WHITEWIN || turn == State.Turn.BLACKWIN || turn == State.Turn.DRAW;
     }
+
 
     public Action getBestMove(State state) {
         List<Action> possibleMoves = getPossibleMoves(state);
@@ -137,49 +140,6 @@ public class MinMaxTablut {
         return bestAction;
     }
 
-    /**
-     * Algoritmo minmax
-     */
-    private float minmax(State state, int depth) {
-
-        // STATO TERMINALE (oppure ho terminato la profondità minima da raggiungere): non faccio niente, uso il valore restituito
-        if (depth == 0 || isTerminal(state)) {
-            return evaluator.evaluate(state);
-        }
-
-        List<Action> possibleMoves = getPossibleMoves(state);
-        // PROFONDITÀ MASSIMA RAGGIUNTA: uso l'euristica per capire la "bontà " della soluzione
-        if (possibleMoves.isEmpty()) {
-            return evaluator.evaluate(state);
-        }
-
-        State.Turn turn = state.getTurn();
-
-        if (turn == State.Turn.WHITE) { /* se è MAX: sceglie il valore massimo tra i figli */
-            
-            float maxEval = Float.NEGATIVE_INFINITY;
-            
-            for (Action action : possibleMoves) {
-                float childEvaluation = minmax(applyMove(state, action), depth - 1);
-                maxEval = Math.max(maxEval, childEvaluation);
-            }
-            
-            return maxEval;
-
-        } else if (turn == State.Turn.BLACK) { /* se è MIN: sceglie il valore minimo tra i figli */
-            
-            float minEval = Float.POSITIVE_INFINITY;
-            
-            for (Action action : possibleMoves) {
-                float childEvaluation = minmax(applyMove(state, action), depth - 1);
-                minEval = Math.min(minEval, childEvaluation);
-            }
-            
-            return minEval;
-        }
-
-        return evaluator.evaluate(state);
-    }
 
     /*
     Algoritmo AlfaBeta
@@ -191,11 +151,19 @@ public class MinMaxTablut {
             return evaluator.evaluate(state);
         }
 
+        // ottengo tutte le mosse possibili 
         List<Action> possibleMoves = getPossibleMoves(state);
+        
+        // ordino le mosse in modo da valutare prima quelle ricordate come killer moves 
+        // per questo livello di profondità
+        orderMovesByKillerHeuristic(possibleMoves, depth);
+
+        // STATO TERMINALE restituisco il valore di valutazione
         if (possibleMoves.isEmpty()) {
             return evaluator.evaluate(state);
         }
 
+        // NON TERMINALE, continuo a espandere l'albero
         State.Turn turn = state.getTurn();
 
         if (turn == State.Turn.WHITE) { /* se è MAX: sceglie il valore massimo tra i figli */
@@ -204,7 +172,16 @@ public class MinMaxTablut {
                 float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
                 maxEval = Math.max(maxEval, childEval);
                 alpha = Math.max(alpha, childEval);
-                if (beta <= alpha) break;      // beta cutoff (potatura)
+                
+                if (beta <= alpha) { // beta cutoff (potatura)
+                    
+                    // questa mossa è ottima per il bianco, ma pessima per il nero, 
+                    // non serve più esplorare le altre mosse a questo livello
+                    // la memorizzo come killer move per questo livello di profondità
+                    killerHeuristic.addKillerMove(action, depth);
+
+                    break;
+                }      
             }
             return maxEval;
 
@@ -214,7 +191,16 @@ public class MinMaxTablut {
                 float childEval = alphaBeta(applyMove(state, action), depth - 1, alpha, beta);
                 minEval = Math.min(minEval, childEval);
                 beta = Math.min(beta, childEval);
-                if (beta <= alpha) break;      // alpha cutoff (potatura)
+
+                if (beta <= alpha) { // alpha cutoff (potatura) 
+                    
+                    // questa mossa è ottima per il nero, ma pessima per il bianco, 
+                    // non serve più esplorare le altre mosse a questo livello
+                    // la memorizzo come killer move per questo livello di profondità
+                    killerHeuristic.addKillerMove(action, depth);
+
+                    break; 
+                }      
             }
             return minEval;
         }
@@ -245,6 +231,7 @@ public class MinMaxTablut {
                     
                     // Verifica la mossa tramite le regole del gioco
                     game.checkMove(state.clone(), action);
+
                     moves.add(action);
                 } catch (Exception e) {
                     // Mossa non valida (es. ostacolo), interrompi la direzione
@@ -263,4 +250,12 @@ public class MinMaxTablut {
             throw new RuntimeException("Mossa non valida generata: " + action, e);
         }
     }
+
+    private void orderMovesByKillerHeuristic(List<Action> moves, int depth) {
+        moves.sort((a, b) -> Integer.compare(
+            killerHeuristic.getKillerScore(b, depth), 
+            killerHeuristic.getKillerScore(a, depth)
+        ));
+    }
+
 }
