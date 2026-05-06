@@ -113,4 +113,35 @@
 
 
 
+    <target name="lucani" depends="compile">
+        <java classname="it.unibo.ai.didattica.competition.tablut.client.TablutLucaniClient" fork="true">
+            <arg value="${role}"/>
+            <arg value="${timeout}"/>
+            <arg value="${server-ip}"/>
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement location="lib/commons-cli-1.4.jar"/>
+                <pathelement location="build"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="lucaniwhite" depends="compile">
+        <java classname="it.unibo.ai.didattica.competition.tablut.client.TablutLucaniWhiteClient" fork="true">
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement location="build"/>
+            </classpath>
+        </java>
+    </target>
+
+    <target name="lucaniblack" depends="compile">
+        <java classname="it.unibo.ai.didattica.competition.tablut.client.TablutLucaniBlackClient" fork="true">
+            <classpath>
+                <pathelement location="lib/gson-2.2.2.jar"/>
+                <pathelement location="build"/>
+            </classpath>
+        </java>
+    </target>
+
 </project>

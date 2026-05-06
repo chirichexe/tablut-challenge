@@ -16,6 +16,8 @@ public class Evaluator {
         this.heuristics.add(new Material());
         this.heuristics.add(new Mobility());
         this.heuristics.add(new OpenPaths());
+        this.heuristics.add(new RhombusHeuristic());
+        this.heuristics.add(new BestPositionsHeuristic());
     }
 
     public float evaluate(State state){

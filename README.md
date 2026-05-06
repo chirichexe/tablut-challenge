@@ -9,7 +9,7 @@ Il sistema estende il framework fornito e implementa un agente in Java con un'ar
 
 - **`it.unibo.ai.didattica.competition.tablut.algorithm`**: Contiene l'engine di ricerca (Alpha-Beta, Iterative Deepening).
 - **`it.unibo.ai.didattica.competition.tablut.heuristic`**: Contiene le implementazioni delle diverse euristiche (Materiale, Mobilità, Sicurezza Re, ecc.).
-- **`Tablut/src/.../client/TablutStudentClient.java`**: Punto di ingresso del client.
+- **`Tablut/src/.../client/TablutLucaniClient.java`**: Punto di ingresso del client (Team Lucani).
 - **`Tablut/build.xml`**: Automazione con Ant per compilazione e testing.
 
 ## Istruzioni per l'Esecuzione
@@ -24,23 +24,22 @@ ant -f Tablut/build.xml compile
 ant -f Tablut/build.xml gui-server
 ```
 
-### 3. Avvio dell'Agente
+### 3. Avvio dell'Agente (Team Lucani)
 ```bash
-java -cp "Tablut/lib/*:Tablut/build" it.unibo.ai.didattica.competition.tablut.client.TablutStudentClient WHITE 60 localhost
+ant -f Tablut/build.xml lucaniwhite
 ```
+*(Oppure `lucaniblack` a seconda del ruolo).*
 
 ## Implementazione AI Corrente
 
 L'agente utilizza un approccio allo stato dell'arte per giochi avversariali:
-- **Algoritmo**: Alpha-Beta Pruning per ottimizzare lo spazio di ricerca.
-- **Strategia**: Iterative Deepening per gestire dinamicamente il timeout (60s).
-- **Modularità**: Le mosse sono generate da un `MoveGenerator` dedicato e valutate da un `Evaluator` che combina pesi dinamici.
-- **Euristiche Implementate**:
-  - `KingEscape`: Valuta le vie di fuga libere per il Re.
-  - `KingSafety`: Protezione del Re tramite pedine bianche.
-  - `Material`: Differenza tra pedine vive.
-  - `Mobility`: Numero di mosse legali disponibili.
-  - `OpenPaths`: Controllo delle linee strategiche sulla scacchiera.
+- **Algoritmo**: Alpha-Beta Pruning con **Killer Move Heuristic** e **Move Ordering**.
+- **Strategia**: Iterative Deepening per la gestione del tempo.
+- **Euristiche Avanzate**:
+  - `Rhombus`: Formazione a rombo per il blocco strategico dei Neri.
+  - `BestPositions`: Controllo delle caselle chiave in apertura per i Bianchi.
+  - `KingEscape/Safety`: Protezione dinamica del Re.
+  - `Weighted Material`: Valutazione differenziata del materiale tra Bianchi e Neri.
 
 ## Vincoli Tecnici
 - Timeout: 60 secondi per mossa.
