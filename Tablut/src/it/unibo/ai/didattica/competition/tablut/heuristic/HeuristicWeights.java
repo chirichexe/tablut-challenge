@@ -13,8 +13,8 @@ public final class HeuristicWeights {
     public static final float KING_SAFETY_FRIENDLY_CELLS_WEIGHT = 2.5f;
 
     /* Pesi per Material */
-    public static final float MATERIAL_BLACK_VALUE = 1.0f;
-    public static final float MATERIAL_WHITE_VALUE = 2.0f; // Più valore alla difesa del bianco
+    public static final float MATERIAL_BLACK_VALUE = 2.0f;
+    public static final float MATERIAL_WHITE_VALUE = 1.0f;
 
     /* Nuove Euristiche */
     public static final float RHOMBUS_WEIGHT = 2.0f;
