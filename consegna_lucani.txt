@@ -1,4 +1,4 @@
 1. Script per eseguire il client:
-    ./runmyclient.sh [WHITE | BLACK] 60 [IP_ADDRESS]
+    /home/tablut/tablut/runmyclient.sh [WHITE | BLACK] 60 [IP_ADDRESS]
 2. Link alla macchina virutale:    
-
+    https://liveunibo-my.sharepoint.com/my?id=%2Fpersonal%2Fgabriele%5Fdoti%5Fstudio%5Funibo%5Fit%2FDocuments%2Ftablut%2Dteam%2Dlucani&viewid=3d4ea0b3%2D4612%2D4cf1%2D97d8%2D04badaa46690
