@@ -16,4 +16,4 @@ if [ -z "$IP" ]; then
     IP="localhost"
 fi
 
-java -cp "Tablut/lib/*:Tablut/build" it.unibo.ai.didattica.competition.tablut.client.TablutLucaniClient "$ROLE" "$TIMEOUT" "$IP"
+java -cp "lib/*:build" it.unibo.ai.didattica.competition.tablut.client.TablutLucaniClient "$ROLE" "$TIMEOUT" "$IP"
