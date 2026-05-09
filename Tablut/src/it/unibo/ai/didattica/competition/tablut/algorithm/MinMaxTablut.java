@@ -50,7 +50,7 @@ public class MinMaxTablut {
 
         // interrompe la ricerca se si avvicina al timeout
         this.startTime = System.currentTimeMillis();
-        this.maxTime = (timeoutSeconds - 2) * 1000L; // Margine di 2 secondi
+        this.maxTime = Math.max(500L, (timeoutSeconds - 2) * 1000L); // margine di sicurezza
         Action bestActionSoFar = null;
         
         for (int currentDepth = 1; currentDepth <= maxDepth; currentDepth++) {

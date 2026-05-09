@@ -14,22 +14,24 @@ import java.net.UnknownHostException;
 public class TablutLucaniClient extends TablutClient {
 
 	private int game;
+	private int maxDepth;
 
-	public TablutLucaniClient(String player, String name, int gameChosen, int timeout, String ipAddress) throws UnknownHostException, IOException {
+	public TablutLucaniClient(String player, String name, int gameChosen, int timeout, String ipAddress, int maxDepth) throws UnknownHostException, IOException {
 		super(player, name, timeout, ipAddress);
 		game = gameChosen;
+		this.maxDepth = Math.max(1, maxDepth);
 	}
 	
 	public TablutLucaniClient(String player, String name, int timeout, String ipAddress) throws UnknownHostException, IOException {
-		this(player, name, 4, timeout, ipAddress);
+		this(player, name, 4, timeout, ipAddress, computeAdaptiveMaxDepth(timeout));
 	}
 	
 	public TablutLucaniClient(String player, int timeout, String ipAddress) throws UnknownHostException, IOException {
-		this(player, "Lucani", 4, timeout, ipAddress);
+		this(player, "Lucani", 4, timeout, ipAddress, computeAdaptiveMaxDepth(timeout));
 	}
 
 	public TablutLucaniClient(String player) throws UnknownHostException, IOException {
-		this(player, "Lucani", 4, 60, "localhost");
+		this(player, "Lucani", 4, 60, "localhost", computeAdaptiveMaxDepth(60));
 	}
 
 
@@ -39,21 +41,28 @@ public class TablutLucaniClient extends TablutClient {
 		String name = "Lucani";
 		String ipAddress = "localhost";
 		int timeout = 60;
+		int maxDepth = computeAdaptiveMaxDepth(timeout);
 		if (args.length < 1) {
 			System.out.println("You must specify which player you are (WHITE or BLACK)");
 			System.exit(-1);
 		} else {
 			role = (args[0]);
 		}
-		if (args.length == 2) {
+		if (args.length >= 2) {
 			timeout = Integer.parseInt(args[1]);
 		}
-		if (args.length == 3) {
+		if (args.length >= 3) {
 			ipAddress = args[2];
 		}
-		System.out.println("Selected client: " + role + " (Team Lucani)");
+		maxDepth = computeAdaptiveMaxDepth(timeout);
+		if (args.length >= 4) {
+			maxDepth = Math.max(1, Integer.parseInt(args[3]));
+		}
 
-		TablutLucaniClient client = new TablutLucaniClient(role, name, gametype, timeout, ipAddress);
+		System.out.println("Selected client: " + role + " (Team Lucani)");
+		System.out.println("Search max depth: " + maxDepth);
+
+		TablutLucaniClient client = new TablutLucaniClient(role, name, gametype, timeout, ipAddress, maxDepth);
 		client.run();
 	}
 
@@ -94,7 +103,7 @@ public class TablutLucaniClient extends TablutClient {
 
 		System.out.println("You are player " + this.getPlayer().toString() + "!");
 
-		MinMaxTablut minMax = new MinMaxTablut(rules, 4); // Aumentata profondità base
+		MinMaxTablut minMax = new MinMaxTablut(rules, this.maxDepth);
 
 		while (true) {
 			try {
@@ -162,5 +171,18 @@ public class TablutLucaniClient extends TablutClient {
 				}
 			}
 		}
+	}
+
+	private static int computeAdaptiveMaxDepth(int timeoutSeconds) {
+		if (timeoutSeconds <= 10) {
+			return 8;
+		}
+		if (timeoutSeconds <= 20) {
+			return 12;
+		}
+		if (timeoutSeconds <= 40) {
+			return 16;
+		}
+		return 24;
 	}
 }
