@@ -25,4 +25,4 @@ fi
 echo "Avvio Player Lucani - Ruolo: $ROLE, Timeout: $TIMEOUT, Server: $IP"
 
 # Esecuzione del client
-java -cp "lib/*:build" it.unibo.ai.didattica.competition.tablut.client.TablutLucaniClient "$ROLE" "$TIMEOUT" "$IP"
+java -cp "Tablut/lib/*:Tablut/build" it.unibo.ai.didattica.competition.tablut.client.TablutLucaniClient "$ROLE" "$TIMEOUT" "$IP"
