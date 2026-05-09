@@ -175,14 +175,14 @@ public class TablutLucaniClient extends TablutClient {
 
 	private static int computeAdaptiveMaxDepth(int timeoutSeconds) {
 		if (timeoutSeconds <= 10) {
-			return 8;
+			return 1;
 		}
 		if (timeoutSeconds <= 20) {
-			return 12;
+			return 2;
 		}
 		if (timeoutSeconds <= 40) {
-			return 16;
+			return 3;
 		}
-		return 24;
+		return 4;
 	}
 }

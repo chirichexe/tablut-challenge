@@ -1,0 +1,4 @@
+1. Script per eseguire il client:
+    ./runmyclient.sh [WHITE | BLACK] 60 [IP_ADDRESS]
+2. Link alla macchina virutale:    
+
