@@ -86,8 +86,9 @@ public class MinMaxTablut {
         if (isMaxNode) {
             float bestValue = Float.NEGATIVE_INFINITY;
             for (Action action : moves) {
-                if (System.currentTimeMillis() - startTime > maxTime) break;
+                if (System.currentTimeMillis() - startTime > maxTime) return null;
                 float value = alphaBeta(moveGenerator.applyMove(state, action), depth - 1, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+                if (System.currentTimeMillis() - startTime > maxTime) return null;
                 if (value > bestValue) {
                     bestValue = value;
                     bestAction = action;
@@ -96,8 +97,9 @@ public class MinMaxTablut {
         } else {
             float bestValue = Float.POSITIVE_INFINITY;
             for (Action action : moves) {
-                if (System.currentTimeMillis() - startTime > maxTime) break;
+                if (System.currentTimeMillis() - startTime > maxTime) return null;
                 float value = alphaBeta(moveGenerator.applyMove(state, action), depth - 1, Float.NEGATIVE_INFINITY, Float.POSITIVE_INFINITY);
+                if (System.currentTimeMillis() - startTime > maxTime) return null;
                 if (value < bestValue) {
                     bestValue = value;
                     bestAction = action;

@@ -11,6 +11,7 @@ import java.net.UnknownHostException;
  * @author Davide Chirichella, Gabriele Doti
  *
  */
+
 public class TablutLucaniClient extends TablutClient {
 
 	private int game;
@@ -175,14 +176,14 @@ public class TablutLucaniClient extends TablutClient {
 
 	private static int computeAdaptiveMaxDepth(int timeoutSeconds) {
 		if (timeoutSeconds <= 10) {
-			return 1;
+			return 8;
 		}
 		if (timeoutSeconds <= 20) {
-			return 2;
+			return 12;
 		}
 		if (timeoutSeconds <= 40) {
-			return 3;
+			return 16;
 		}
-		return 4;
+		return 24;
 	}
 }
